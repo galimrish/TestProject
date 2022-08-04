@@ -33,7 +33,7 @@
 		{
 			if (Items?.Count() != ItemsAmount)
 			{
-				throw new Exception($"Testlet items amout should be {ItemsAmount}");
+				throw new Exception($"Testlet items amount should be {ItemsAmount}");
 			}
 
 			if (GetOperationalItems().Count != OperationalAmount || GetPretestItems().Count != PretestAmount)

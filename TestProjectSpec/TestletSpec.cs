@@ -34,7 +34,7 @@ namespace TestProjectSpec
 			list.AddRange(Enumerable.Repeat(new Item(), length));
 
 			var exception = Assert.Throws<Exception>(() => new Testlet("1", list));
-			Assert.That(exception?.Message, Is.EqualTo("Testlet items amout should be 10"));
+			Assert.That(exception?.Message, Is.EqualTo("Testlet items amount should be 10"));
 		}
 
 		[Test]
