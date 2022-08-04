@@ -1,14 +1,8 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TestProject;
 
-
-namespace TestProject
+namespace TestProjectSpec
 {
-	public class UnitTest
+	public class Tests
 	{
 		private Testlet _testlet;
 
@@ -34,34 +28,36 @@ namespace TestProject
 
 		[TestCase(9)]
 		[TestCase(11)]
-		public void Randomize_ItemsAmountNot10_ThrowsError(int length)
+		public void Testlet_ItemsAmountNot10_ThrowsError(int length)
 		{
 			var list = new List<Item>(length);
 			list.AddRange(Enumerable.Repeat(new Item(), length));
-			var testlet = new Testlet("1", list);
-			
-			var exception = Assert.Throws<Exception>(() => testlet.Randomize());
-			Assert.AreEqual("Testlet items amout should be 10", exception?.Message);
+
+			var exception = Assert.Throws<Exception>(() => new Testlet("1", list));
+			Assert.That(exception?.Message, Is.EqualTo("Testlet items amout should be 10"));
 		}
 
 		[Test]
-		public void Randomize_SevenOperationalItems_ThrowsError()
+		public void Testlet_SevenOperationalItems_ThrowsError()
 		{
 			var list = new List<Item>(10);
 			list.AddRange(Enumerable.Repeat(new Item { ItemType = ItemTypeEnum.Operational }, 7));
 			list.AddRange(Enumerable.Repeat(new Item { ItemType = ItemTypeEnum.Pretest }, 3));
-			var testlet = new Testlet("1", list);
 
-			var exception = Assert.Throws<Exception>(() => testlet.Randomize());
-			Assert.AreEqual("Incorrect Testlet set of items", exception?.Message);
+			var exception = Assert.Throws<Exception>(() => new Testlet("1", list));
+			Assert.That(exception?.Message, Is.EqualTo("Incorrect Testlet set of items"));
 		}
 
 		[Test]
 		public void Randomize_FirstTwoItemsArePretest_ReturnsTrue()
 		{
 			var items = _testlet.Randomize();
-			Assert.AreEqual(ItemTypeEnum.Pretest, items[0].ItemType);
-			Assert.AreEqual(ItemTypeEnum.Pretest, items[1].ItemType);
+			
+			Assert.Multiple(() =>
+			{
+				Assert.That(items[0].ItemType, Is.EqualTo(ItemTypeEnum.Pretest));
+				Assert.That(items[1].ItemType, Is.EqualTo(ItemTypeEnum.Pretest));
+			});
 		}
 
 		[Test]
@@ -69,7 +65,7 @@ namespace TestProject
 		{
 			var items = _testlet.Randomize().Skip(2).Where(i => i.ItemType == ItemTypeEnum.Pretest);
 
-			Assert.IsTrue(items.Count() == 2);
+			Assert.That(items.Count(), Is.EqualTo(2));
 		}
 
 		[Test]
@@ -77,7 +73,7 @@ namespace TestProject
 		{
 			var duplicates = _testlet.Randomize().GroupBy(i => i.ItemId).Where(g => g.Count() > 1);
 
-			Assert.IsFalse(duplicates.Any());
+			Assert.That(duplicates.Any(), Is.False);
 		}
 	}
 }
